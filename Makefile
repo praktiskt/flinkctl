@@ -1,5 +1,5 @@
 deploy:
-	./flink-cluster/deploy.sh
+	./flink-cluster/deploy.sh apply
 
 undeploy:
-	./flink-cluster/undeploy.sh
+	./flink-cluster/deploy.sh delete
