@@ -15,8 +15,21 @@ limitations under the License.
 */
 package main
 
-import "flinkctl/cmd"
+import "github.com/magnusfurugard/flinkctl/cmd"
 
+/*
+* config
+	* add-cluster <url> <flags>
+	* use-cluster <url> <flags>
+* get
+	* jobs
+	* taskmanagers
+* describe
+	* job <jobid>
+* logs
+* submit
+	* job <flags>
+*/
 func main() {
 	cmd.Execute()
 }
