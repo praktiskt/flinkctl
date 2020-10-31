@@ -17,7 +17,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/magnusfurugard/flinkctl/tools"
 	"github.com/spf13/cobra"
@@ -29,15 +28,19 @@ var describeJobCmd = &cobra.Command{
 	Short:  "A brief description of your command",
 	PreRun: func(cmd *cobra.Command, args []string) { InitCluster() },
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if len(args) != 1 {
-			fmt.Printf("bad args, got: %v\n", args)
-			os.Exit(1)
+		if len(args) < 1 {
+			return fmt.Errorf("bad args, got: %v", args)
 		}
-		re, err := cl.DescribeJob(args[0])
-		if err != nil {
-			return err
+		for _, jid := range args {
+			if len(jid) != 32 {
+				return fmt.Errorf("%v is not a valid jid", jid)
+			}
+			re, err := cl.DescribeJob(jid)
+			if err != nil {
+				return err
+			}
+			tools.JSONPrint(re)
 		}
-		tools.JSONPrint(re)
 		return nil
 	},
 }
