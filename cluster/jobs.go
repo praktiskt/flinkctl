@@ -55,6 +55,8 @@ func (c *Cluster) GetJobs() (Jobs, error) {
 }
 
 func (c *Cluster) GetJobsOverview() (JobsOverview, error) {
+	// TODO: Fix .duration to be a duration
+	// TODO: .last-modification and start-time shuold be datetimes (UTC)
 	re, err := http.Get(c.Jobs.OverviewURL.String())
 	if err != nil {
 		return JobsOverview{}, err
