@@ -50,6 +50,7 @@ func New(hostURL string) Cluster {
 	cl.ConfigURL = tools.UrlOrFail(h, "/overview")
 	cl.DatasetsURL = tools.UrlOrFail(h, "/datasets")
 
+	cl.Jobs.URL = tools.UrlOrFail(h, "/jobs")
 	cl.Jobs.MetricsURL = tools.UrlOrFail(h, "/jobs/metrics")
 	cl.Jobs.OverviewURL = tools.UrlOrFail(h, "/jobs/overview")
 

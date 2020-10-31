@@ -33,17 +33,19 @@ var (
 	cl      c.Cluster
 )
 
+func InitCluster() {
+	cluster := tools.GetCurrentCluster()
+	host := viper.GetStringMap("clusters")[cluster].(map[string]interface{})["url"]
+	hostString := strings.TrimSpace(host.(string))
+	cl = c.New(hostString)
+}
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "flinkctl",
-	Short: "Manage Flink applications.",
+	Use:    "flinkctl",
+	Short:  "Manage Flink applications.",
+	PreRun: func(cmd *cobra.Command, args []string) { InitCluster() },
 	RunE: func(cmd *cobra.Command, args []string) error {
-		cluster := tools.GetCurrentCluster()
-
-		// TODO: Clean up this garbage
-		host := viper.GetStringMap("clusters")[cluster].(map[string]interface{})["url"]
-
-		cl = c.New(strings.TrimSpace(host.(string)))
 		fmt.Println(cl)
 		return nil
 	},

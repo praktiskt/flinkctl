@@ -38,7 +38,7 @@ type JobsOverview struct {
 }
 
 func (c *Cluster) GetJobs() (Jobs, error) {
-	re, err := http.Get(c.ConfigURL.String())
+	re, err := http.Get(c.Jobs.URL.String())
 	if err != nil {
 		return Jobs{}, err
 	}
@@ -55,7 +55,7 @@ func (c *Cluster) GetJobs() (Jobs, error) {
 }
 
 func (c *Cluster) GetJobsOverview() (JobsOverview, error) {
-	re, err := http.Get(c.ConfigURL.String())
+	re, err := http.Get(c.Jobs.OverviewURL.String())
 	if err != nil {
 		return JobsOverview{}, err
 	}
