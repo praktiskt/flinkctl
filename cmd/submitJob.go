@@ -38,11 +38,20 @@ type ApplicationBody struct {
 	EntryClass            *string `json:"entryClass"`
 }
 
+var (
+	allowNonRestoredState string
+	parallelism           string
+	programArgs           string
+	savepointPath         string
+	entryClass            string
+)
+
 // submitJobCmd represents the submitJob command
 var submitJobCmd = &cobra.Command{
-	Use:    "job <path to jar> [flags]",
-	Short:  "Submit a packaged Flink job to your cluster.",
-	PreRun: func(cmd *cobra.Command, args []string) { InitCluster() },
+	Use:     "job <path to jar> [flags]",
+	Short:   "Submit a packaged Flink job to your cluster.",
+	Example: "flinkctl submit job ~/path/to/flinkjob.jar",
+	PreRun:  func(cmd *cobra.Command, args []string) { InitCluster() },
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
 			return fmt.Errorf("must specify at least one job to submit")
@@ -57,34 +66,40 @@ var submitJobCmd = &cobra.Command{
 				SendFile(file).
 				End()
 
-			defer resp.Body.Close()
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return err
+			}
 
-			fmt.Println("response Status:", resp.Status)
-			body, _ := ioutil.ReadAll(resp.Body)
-			s := SubmitResponse{}
-			json.Unmarshal(body, &s)
-			fmt.Println("response Body:", string(body))
+			if resp.StatusCode != 200 {
+				return fmt.Errorf("failed to submit jarfile: %v", string(body))
+			}
 
-			fmt.Println("-- STARTING JOB --")
-			fn := strings.Split(s.Filename, "/")
-			f := fn[len(fn)-1]
-			fmt.Println(f)
+			fileToPass := fmt.Sprintf("%v/%v/run", cl.Jars.URL.String(), ExtractSubmittedFilename(body))
 			appb, _ := json.Marshal(ApplicationBody{
-				//TODO: Pass flags to each atrribute
-				AllowNonRestoredState: nil,
-				Parallelism:           nil,
-				ProgramArgs:           nil,
-				SavepointPath:         nil,
-				EntryClass:            nil,
+				AllowNonRestoredState: StringOrNil(allowNonRestoredState),
+				Parallelism:           StringOrNil(parallelism),
+				ProgramArgs:           StringOrNil(programArgs),
+				SavepointPath:         StringOrNil(savepointPath),
+				EntryClass:            StringOrNil(entryClass),
 			})
+
 			resp, _, _ = gorequest.New().
-				Post(cl.Jars.URL.String() + "/" + f + "/run"). //TODO: Pass entry class if exists: ?entry-class=dummyApp.StreamingJob"
+				Post(fileToPass).
 				Type("json").
 				Send(string(appb)).
 				End()
-			fmt.Println("response Status:", resp.Status)
-			body, _ = ioutil.ReadAll(resp.Body)
-			fmt.Println("response Body:", string(body))
+
+			body, err = ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return err
+			}
+
+			if resp.StatusCode != 200 {
+				return fmt.Errorf("failed to start job: %v", string(body))
+			}
+
+			fmt.Println(string(body))
 
 		}
 
@@ -95,13 +110,23 @@ var submitJobCmd = &cobra.Command{
 func init() {
 	submitCmd.AddCommand(submitJobCmd)
 
-	// Here you will define your flags and configuration settings.
+	submitJobCmd.PersistentFlags().StringVar(&allowNonRestoredState, "allowNonRestoredState", "", "Allow non restored state")
+	submitJobCmd.PersistentFlags().StringVar(&parallelism, "parallelism", "", "set parallelism for the submitted job")
+	submitJobCmd.PersistentFlags().StringVar(&programArgs, "programArgs", "", `a string of program arguments, e.g. "-A=B -C=D"`)
+	submitJobCmd.PersistentFlags().StringVar(&savepointPath, "savepointPath", "", "if specified, a save point path")
+	submitJobCmd.PersistentFlags().StringVar(&entryClass, "entryClass", "", "the entry class of the submitted jar")
+}
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// submitJobCmd.PersistentFlags().String("foo", "", "A help for foo")
+func StringOrNil(a string) *string {
+	if len(a) == 0 {
+		return nil
+	}
+	return &a
+}
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// submitJobCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+func ExtractSubmittedFilename(responseBody []byte) string {
+	s := SubmitResponse{}
+	json.Unmarshal(responseBody, &s)
+	fn := strings.Split(s.Filename, "/")
+	return fn[len(fn)-1]
 }
