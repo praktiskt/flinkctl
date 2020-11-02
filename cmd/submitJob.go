@@ -115,11 +115,11 @@ var submitJobCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(submitJobCmd)
 
-	submitJobCmd.PersistentFlags().StringVar(&allowNonRestoredState, "allowNonRestoredState", "", "Allow non restored state")
-	submitJobCmd.PersistentFlags().StringVar(&parallelism, "parallelism", "", "set parallelism for the submitted job")
-	submitJobCmd.PersistentFlags().StringVar(&programArgs, "programArgs", "", `a string of program arguments, e.g. "-A=B -C=D"`)
-	submitJobCmd.PersistentFlags().StringVar(&savepointPath, "savepointPath", "", "if specified, a save point path")
-	submitJobCmd.PersistentFlags().StringVar(&entryClass, "entryClass", "", "the entry class of the submitted jar")
+	submitJobCmd.Flags().StringVar(&allowNonRestoredState, "allowNonRestoredState", "", "Allow non restored state")
+	submitJobCmd.Flags().StringVar(&parallelism, "parallelism", "", "set parallelism for the submitted job")
+	submitJobCmd.Flags().StringVar(&programArgs, "programArgs", "", `a string of program arguments, e.g. "-A=B -C=D"`)
+	submitJobCmd.Flags().StringVar(&savepointPath, "savepointPath", "", "if specified, a save point path")
+	submitJobCmd.Flags().StringVar(&entryClass, "entryClass", "", "the entry class of the submitted jar")
 }
 
 func StringOrNil(a string) *string {

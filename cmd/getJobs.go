@@ -50,6 +50,7 @@ var jobsCmd = &cobra.Command{
 func init() {
 	getCmd.AddCommand(jobsCmd)
 
+	//TODO: Implement filtering on these flags, add all available statuses to default
 	jobsCmd.Flags().StringSliceVarP(&flagJobStatus, "status", "s", []string{"RUNNING", "CANCELLED"}, "a comma separated list of statuses of jobs")
 	jobsCmd.Flags().BoolVarP(&showJobDetails, "details", "d", false, "show details of all running jobs")
 }
