@@ -20,7 +20,6 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/magnusfurugard/flinkctl/tools"
 	"github.com/spf13/cobra"
 )
 
@@ -56,7 +55,7 @@ var getJarsCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		tools.TablePrint(s.Files)
+		Print(s.Files)
 		return nil
 	},
 }

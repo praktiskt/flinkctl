@@ -29,9 +29,14 @@ import (
 )
 
 var (
-	cfgFile string
-	cl      c.Cluster
+	cfgFile      string
+	cl           c.Cluster
+	outputFormat string
 )
+
+func Print(t interface{}) {
+	tools.Printer(outputFormat, t)
+}
 
 func InitCluster() {
 	cluster := tools.GetCurrentCluster()
@@ -62,6 +67,7 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+	rootCmd.PersistentFlags().StringVarP(&outputFormat, "outputFormat", "o", "table", "output format, supports: json,table")
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.flinkctl.yaml)")
 }
 

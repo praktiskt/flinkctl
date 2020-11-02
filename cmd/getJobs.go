@@ -16,7 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/magnusfurugard/flinkctl/tools"
 	"github.com/spf13/cobra"
 )
 
@@ -36,13 +35,13 @@ var jobsCmd = &cobra.Command{
 			if err != nil {
 				return err
 			}
-			tools.TablePrint(re.Jobs)
+			Print(re.Jobs)
 		} else {
 			re, err := cl.GetJobs()
 			if err != nil {
 				return err
 			}
-			tools.TablePrint(re.Jobs)
+			Print(re.Jobs)
 		}
 		return nil
 	},

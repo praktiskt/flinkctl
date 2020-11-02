@@ -16,7 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/magnusfurugard/flinkctl/tools"
 	"github.com/spf13/cobra"
 )
 
@@ -30,7 +29,7 @@ var describeClusterCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		tools.TablePrint(overview)
+		Print(overview)
 		return nil
 	},
 }

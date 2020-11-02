@@ -38,6 +38,10 @@ type ApplicationBody struct {
 	EntryClass            *string `json:"entryClass"`
 }
 
+type RunResponse struct {
+	JobID string `json:"jobid" header:"jobid"`
+}
+
 var (
 	allowNonRestoredState string
 	parallelism           string
@@ -99,8 +103,9 @@ var submitJobCmd = &cobra.Command{
 				return fmt.Errorf("failed to start job: %v", string(body))
 			}
 
-			fmt.Println(string(body))
-
+			re := RunResponse{}
+			json.Unmarshal(body, &re)
+			Print(re)
 		}
 
 		return nil

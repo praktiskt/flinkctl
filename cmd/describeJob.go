@@ -18,7 +18,6 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/magnusfurugard/flinkctl/tools"
 	"github.com/spf13/cobra"
 )
 
@@ -38,7 +37,7 @@ var describeJobCmd = &cobra.Command{
 			if err != nil {
 				return err
 			}
-			tools.JSONPrint(re)
+			Print(re)
 		}
 		return nil
 	},

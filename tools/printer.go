@@ -8,6 +8,16 @@ import (
 	"github.com/landoop/tableprinter"
 )
 
+func Printer(outputFormat string, t interface{}) {
+	if outputFormat == "json" {
+		JSONPrint(t)
+	} else if outputFormat == "table" {
+		TablePrint(t)
+	} else {
+		fmt.Println("unsupported output format:", outputFormat)
+	}
+}
+
 func TablePrint(t interface{}) {
 	tableprinter.Print(os.Stdout, t)
 }
