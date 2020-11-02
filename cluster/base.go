@@ -42,7 +42,10 @@ func (c *Cluster) GetConfig() (ClusterConfig, error) {
 	}
 
 	s := ClusterConfig{}
-	json.Unmarshal(body, &s)
+	err = json.Unmarshal(body, &s)
+	if err != nil {
+		return ClusterConfig{}, err
+	}
 	return s, nil
 }
 
@@ -59,7 +62,10 @@ func (c *Cluster) GetOverview() (ClusterOverview, error) {
 	}
 
 	s := ClusterOverview{}
-	json.Unmarshal(body, &s)
+	err = json.Unmarshal(body, &s)
+	if err != nil {
+		return ClusterOverview{}, err
+	}
 	return s, nil
 
 }

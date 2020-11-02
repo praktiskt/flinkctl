@@ -1,5 +1,7 @@
 package cluster
 
+// TODO: Once we have generics, refactor all Get* functions :)
+
 import (
 	"encoding/json"
 	"io/ioutil"

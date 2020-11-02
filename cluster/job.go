@@ -1,7 +1,10 @@
 package cluster
 
+// TODO: Once we have generics, refactor all Describe* functions :)
+
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -90,7 +93,7 @@ type JobDescription struct {
 
 func (c *Cluster) DescribeJob(jid string) (JobDescription, error) {
 	if len(jid) != 32 {
-		panic("invalid jid")
+		return JobDescription{}, fmt.Errorf("invalid jid: %v", jid)
 	}
 	re, err := http.Get(c.Jobs.URL.String() + "/" + jid)
 	if err != nil {
@@ -104,7 +107,10 @@ func (c *Cluster) DescribeJob(jid string) (JobDescription, error) {
 	}
 
 	s := JobDescription{}
-	json.Unmarshal(body, &s)
+	err = json.Unmarshal(body, &s)
+	if err != nil {
+		return JobDescription{}, err
+	}
 	return s, nil
 
 }
