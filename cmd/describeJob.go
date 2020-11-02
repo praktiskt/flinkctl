@@ -22,7 +22,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// describeJobCmd represents the describeJob command
 var describeJobCmd = &cobra.Command{
 	Use:    "job <jid>",
 	Short:  "A brief description of your command",
