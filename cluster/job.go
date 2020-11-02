@@ -10,12 +10,12 @@ import (
 )
 
 type JobDescription struct {
-	Duration    int64  `json:"duration"`
-	EndTime     int64  `json:"end-time"`
-	IsStoppable bool   `json:"isStoppable"`
-	Jid         string `json:"jid"`
-	Name        string `json:"name"`
-	Now         int64  `json:"now"`
+	Duration    int64  `json:"duration" header:"duration"`
+	EndTime     int64  `json:"end-time" header:"end-time"`
+	IsStoppable bool   `json:"isStoppable" header:"isStoppable"`
+	Jid         string `json:"jid" header:"jid"`
+	Name        string `json:"name" header:"name"`
+	Now         int64  `json:"now" header:"now"`
 	Plan        struct {
 		Jid   string `json:"jid"`
 		Name  string `json:"name"`
@@ -34,8 +34,8 @@ type JobDescription struct {
 			Parallelism         int64    `json:"parallelism"`
 		} `json:"nodes"`
 	} `json:"plan"`
-	StartTime    int64  `json:"start-time"`
-	State        string `json:"state"`
+	StartTime    int64  `json:"start-time" header:"start-time"`
+	State        string `json:"state" header:"state"`
 	StatusCounts struct {
 		Canceled    int64 `json:"CANCELED"`
 		Canceling   int64 `json:"CANCELING"`

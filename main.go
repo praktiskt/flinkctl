@@ -22,13 +22,12 @@ import "github.com/magnusfurugard/flinkctl/cmd"
 	* add-cluster <url> <flags>
 	* use-cluster <url> <flags>
 * get
-	* jobs
 	* taskmanagers
-* describe
-	* job <jobid>
 * logs
-* submit
-	* job <flags>
+* stop/kill
+	* cluster ???
+		* must have --i-know-what-im-doing to work
+	* job
 */
 func main() {
 	cmd.Execute()
