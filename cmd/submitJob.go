@@ -48,7 +48,7 @@ var (
 
 // submitJobCmd represents the submitJob command
 var submitJobCmd = &cobra.Command{
-	Use:     "job <path to jar> [flags]",
+	Use:     "submit-job <path to jar> [flags]",
 	Short:   "Submit a packaged Flink job to your cluster.",
 	Example: "flinkctl submit job ~/path/to/flinkjob.jar",
 	PreRun:  func(cmd *cobra.Command, args []string) { InitCluster() },
@@ -108,7 +108,7 @@ var submitJobCmd = &cobra.Command{
 }
 
 func init() {
-	submitCmd.AddCommand(submitJobCmd)
+	rootCmd.AddCommand(submitJobCmd)
 
 	submitJobCmd.PersistentFlags().StringVar(&allowNonRestoredState, "allowNonRestoredState", "", "Allow non restored state")
 	submitJobCmd.PersistentFlags().StringVar(&parallelism, "parallelism", "", "set parallelism for the submitted job")
