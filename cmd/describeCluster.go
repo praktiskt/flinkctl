@@ -16,20 +16,25 @@ limitations under the License.
 package cmd
 
 import (
-	"os"
-
+	"github.com/magnusfurugard/flinkctl/tools"
 	"github.com/spf13/cobra"
 )
 
-var describeCmd = &cobra.Command{
-	Use:   "describe",
-	Short: "Describe a resource in your cluster, or the cluster itself.",
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
-		os.Exit(0)
+// describeClusterCmd represents the describeCluster command
+var describeClusterCmd = &cobra.Command{
+	Use:    "cluster",
+	Short:  "Describe your current cluster",
+	PreRun: func(cmd *cobra.Command, args []string) { InitCluster() },
+	RunE: func(cmd *cobra.Command, args []string) error {
+		overview, err := cl.GetOverview()
+		if err != nil {
+			return err
+		}
+		tools.TablePrint(overview)
+		return nil
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(describeCmd)
+	describeCmd.AddCommand(describeClusterCmd)
 }

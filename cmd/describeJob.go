@@ -24,7 +24,7 @@ import (
 
 var describeJobCmd = &cobra.Command{
 	Use:    "job <jid>",
-	Short:  "A brief description of your command",
+	Short:  "Describe a job in your cluster.",
 	PreRun: func(cmd *cobra.Command, args []string) { InitCluster() },
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
