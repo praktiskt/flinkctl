@@ -16,8 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 )
 
@@ -25,10 +23,6 @@ var getCmd = &cobra.Command{
 	Use:    "get",
 	Short:  "Get a resource in your Flink cluster",
 	PreRun: func(cmd *cobra.Command, args []string) { InitCluster() },
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
-		os.Exit(0)
-	},
 }
 
 func init() {

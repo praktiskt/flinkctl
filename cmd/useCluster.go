@@ -18,15 +18,28 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/magnusfurugard/flinkctl/config"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // useClusterCmd represents the useCluster command
 var useClusterCmd = &cobra.Command{
-	Use:   "use-cluster",
-	Short: "A brief description of your command",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("useCluster called")
+	Use:     "use-cluster <cluster url>",
+	Short:   "Change the currently in-use config for flinkctl",
+	Example: `flinkctl config use-cluster https://localhost:123`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if len(args) != 1 {
+			return fmt.Errorf("use-cluster requires exactly one argument")
+		}
+		url := args[0]
+		if !config.ConfigExists(url) {
+			return fmt.Errorf("no such cluster exists in your config")
+		}
+		viper.SetDefault("current-cluster", url)
+		viper.WriteConfig()
+		fmt.Printf("current cluster updated: %v\n", config.GetCurrentName())
+		return nil
 	},
 }
 

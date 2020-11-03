@@ -63,6 +63,7 @@ var submitJobCmd = &cobra.Command{
 
 		u := cl.Jars.UploadURL.String()
 		for _, file := range args {
+			// TODO: Respect headers
 			resp, _, _ := gorequest.
 				New().
 				Post(u).

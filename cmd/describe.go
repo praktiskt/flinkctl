@@ -16,18 +16,12 @@ limitations under the License.
 package cmd
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 )
 
 var describeCmd = &cobra.Command{
 	Use:   "describe",
 	Short: "Describe a resource in your cluster, or the cluster itself.",
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
-		os.Exit(0)
-	},
 }
 
 func init() {

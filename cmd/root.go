@@ -39,7 +39,7 @@ func Print(t interface{}) {
 }
 
 func InitCluster() {
-	host, err := config.GetCurrentConfig()
+	host, err := config.GetCurrent()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -54,7 +54,6 @@ var rootCmd = &cobra.Command{
 	Short:  "Manage Flink applications.",
 	PreRun: func(cmd *cobra.Command, args []string) { InitCluster() },
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println(config.GetConfig())
 		return nil
 	},
 }
@@ -85,10 +84,6 @@ func initConfig() {
 	viper.AddConfigPath(home)
 	viper.SetConfigName(".flinkctl")
 	viper.SetConfigType("yaml")
-	viper.AutomaticEnv() // read in environment variables that match
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config")
-	}
+	viper.AutomaticEnv()
+	viper.ReadInConfig()
 }

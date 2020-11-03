@@ -17,23 +17,18 @@ type ClusterConfig struct {
 	Headers []string `yaml:"headers"`
 }
 
-func GetConfig() *FlinkctlConfig {
+func Get() *FlinkctlConfig {
 	conf := &FlinkctlConfig{}
-	if err := viper.ReadInConfig(); err != nil {
-		viper.SetDefault("current-cluster", "")
-		viper.SafeWriteConfig()
-	}
 	if err := viper.Unmarshal(conf); err != nil {
 		fmt.Printf("Could not parse config: %v", err)
 		return conf
 	}
-	fmt.Println(conf.Clusters)
 	return conf
 }
 
-func GetCurrentConfig() (*ClusterConfig, error) {
-	globalConfig := GetConfig()
-	currentCluster := GetCurrentCluster()
+func GetCurrent() (*ClusterConfig, error) {
+	globalConfig := Get()
+	currentCluster := GetCurrentName()
 	for _, conf := range globalConfig.Clusters {
 		if conf.URL == currentCluster {
 			return &conf, nil
@@ -42,16 +37,26 @@ func GetCurrentConfig() (*ClusterConfig, error) {
 	return &ClusterConfig{}, fmt.Errorf("no such cluster: %v", currentCluster)
 }
 
-func GetCurrentCluster() string {
+func ConfigExists(url string) bool {
+	fullConf := Get()
+	for _, conf := range fullConf.Clusters {
+		if conf.URL == url {
+			return true
+		}
+	}
+	return false
+}
+
+func GetCurrentName() string {
 	return viper.GetString("current-cluster")
 }
 
-func CurrentClusterExists() bool {
-	return GetCurrentCluster() == ""
+func CurrentExists() bool {
+	return GetCurrentName() == ""
 }
 
-func CheckCurrentClusterExists() {
-	if !CurrentClusterExists() {
+func CheckCurrentExists() {
+	if !CurrentExists() {
 		fmt.Println("No current cluster context set")
 		os.Exit(1)
 	}

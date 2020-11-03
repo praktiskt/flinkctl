@@ -30,6 +30,7 @@ type ClusterOverview struct {
 }
 
 func (c *Cluster) GetConfig() (ClusterConfig, error) {
+	//TODO: Respect headers
 	re, err := http.Get(c.ConfigURL.String())
 	if err != nil {
 		return ClusterConfig{}, err
@@ -50,6 +51,7 @@ func (c *Cluster) GetConfig() (ClusterConfig, error) {
 }
 
 func (c *Cluster) GetOverview() (ClusterOverview, error) {
+	// TODO: Respect headers
 	re, err := http.Get(c.OverviewURL.String())
 	if err != nil {
 		return ClusterOverview{}, err

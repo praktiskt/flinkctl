@@ -92,6 +92,7 @@ type JobDescription struct {
 }
 
 func (c *Cluster) DescribeJob(jid string) (JobDescription, error) {
+	//TODO: Respect headers
 	if len(jid) != 32 {
 		return JobDescription{}, fmt.Errorf("invalid jid: %v", jid)
 	}

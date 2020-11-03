@@ -16,8 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
@@ -25,9 +23,6 @@ import (
 var stopCmd = &cobra.Command{
 	Use:   "stop",
 	Short: "A brief description of your command",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("stop called")
-	},
 }
 
 func init() {

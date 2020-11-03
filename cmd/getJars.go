@@ -41,6 +41,7 @@ var getJarsCmd = &cobra.Command{
 	Short:  "List all uploaded jars in your cluster",
 	PreRun: func(cmd *cobra.Command, args []string) { InitCluster() },
 	RunE: func(cmd *cobra.Command, args []string) error {
+		//TODO: Respect headers
 		resp, err := http.Get(cl.Jars.URL.String())
 		if err != nil {
 			return err

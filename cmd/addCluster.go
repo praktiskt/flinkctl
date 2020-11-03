@@ -17,20 +17,21 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/url"
-	"os"
 
 	"github.com/magnusfurugard/flinkctl/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"gopkg.in/yaml.v2"
 )
+
+var headers []string
 
 // addClusterCmd represents the addCluster command
 var addClusterCmd = &cobra.Command{
 	Use:   "add-cluster <url:port>",
-	Short: "A brief description of your command",
+	Short: "Add a new cluster to your flinkctl config",
+	Example: `flinkctl config add-cluster https://localhost:123
+flinkctl config add-cluster https://localhost:567 --headers="Authorization: Basic Zm9v,Content-Type: application/json"`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
 			return fmt.Errorf("add-cluster requires exactly 1 positional argument, not %v", len(args))
@@ -41,29 +42,25 @@ var addClusterCmd = &cobra.Command{
 			return err
 		}
 
-		currentConfig := config.GetConfig()
-		newConfig := config.ClusterConfig{URL: u.String()}
+		currentConfig := config.Get()
+		newConfig := config.ClusterConfig{URL: u.String(), Headers: headers}
 		if len(currentConfig.Clusters) == 0 {
-			arr := []config.ClusterConfig{}
-			currentConfig = &config.FlinkctlConfig{
-				Clusters:       append(arr, newConfig),
-				CurrentCluster: u.String(),
-			}
+			viper.SetDefault("clusters", newConfig)
+			viper.SetDefault("current-cluster", u.String())
+			viper.SafeWriteConfig()
+			viper.ReadInConfig()
+			fmt.Printf("Config file created: %v\n", viper.ConfigFileUsed())
 		} else {
-			currentConfig.Clusters = append(currentConfig.Clusters, newConfig)
-			currentConfig.CurrentCluster = config.GetCurrentCluster()
+			viper.SetDefault("clusters", append(currentConfig.Clusters, newConfig))
+			viper.SetDefault("current-cluster", u.String())
+			viper.WriteConfig()
+			fmt.Printf("current-cluster updated: %v\n", u.String())
 		}
-		out, err := yaml.Marshal(currentConfig)
-		fmt.Println(string(out))
-		if err != nil {
-			return err
-		}
-		viper.ReadInConfig()
-		ioutil.WriteFile(viper.ConfigFileUsed(), out, os.ModePerm)
 		return nil
 	},
 }
 
 func init() {
 	configCmd.AddCommand(addClusterCmd)
+	addClusterCmd.Flags().StringSliceVar(&headers, "headers", []string{}, "additional headers to pass when calling this cluster")
 }
