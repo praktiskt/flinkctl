@@ -39,9 +39,12 @@ func Print(t interface{}) {
 }
 
 func InitCluster() {
-	cluster := tools.GetCurrentCluster()
-	host := viper.GetStringMap("clusters")[cluster].(map[string]interface{})["url"]
-	hostString := strings.TrimSpace(host.(string))
+	host, err := tools.GetCurrentConfig()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	hostString := strings.TrimSpace(host.URL)
 	cl = c.New(hostString)
 }
 
@@ -51,7 +54,7 @@ var rootCmd = &cobra.Command{
 	Short:  "Manage Flink applications.",
 	PreRun: func(cmd *cobra.Command, args []string) { InitCluster() },
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println(cl)
+		fmt.Println(tools.GetConfig())
 		return nil
 	},
 }
@@ -93,6 +96,6 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err != nil {
-		fmt.Println("No configuration file found, tried to find:", viper.ConfigFileUsed())
+		fmt.Println("No configuration file found")
 	}
 }
