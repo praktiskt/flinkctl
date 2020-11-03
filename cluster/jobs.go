@@ -5,7 +5,9 @@ package cluster
 import (
 	"encoding/json"
 	"io/ioutil"
-	"net/http"
+
+	"github.com/magnusfurugard/flinkctl/tools"
+	"github.com/parnurzeal/gorequest"
 )
 
 type Jobs struct {
@@ -40,13 +42,8 @@ type JobsOverview struct {
 }
 
 func (c *Cluster) GetJobs() (Jobs, error) {
-	//TODO: Respect headers
-	re, err := http.Get(c.Jobs.URL.String())
-	if err != nil {
-		return Jobs{}, err
-	}
-	defer re.Body.Close()
-
+	re, _, _ := tools.ApplyHeadersToRequest(gorequest.New().Get(c.Jobs.URL.String())).End()
+	//TODO: Error management
 	body, err := ioutil.ReadAll(re.Body)
 	if err != nil {
 		return Jobs{}, err
@@ -60,13 +57,8 @@ func (c *Cluster) GetJobs() (Jobs, error) {
 func (c *Cluster) GetJobsOverview() (JobsOverview, error) {
 	// TODO: Fix .duration to be a duration
 	// TODO: .last-modification and start-time shuold be datetimes (UTC)
-	// TODO: Respect headers
-	re, err := http.Get(c.Jobs.OverviewURL.String())
-	if err != nil {
-		return JobsOverview{}, err
-	}
-	defer re.Body.Close()
-
+	re, _, _ := tools.ApplyHeadersToRequest(gorequest.New().Get(c.Jobs.OverviewURL.String())).End()
+	//TODO: Error management
 	body, err := ioutil.ReadAll(re.Body)
 	if err != nil {
 		return JobsOverview{}, err

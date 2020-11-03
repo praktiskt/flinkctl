@@ -45,14 +45,14 @@ flinkctl config add-cluster https://localhost:567 --headers="Authorization: Basi
 		currentConfig := config.Get()
 		newConfig := config.ClusterConfig{URL: u.String(), Headers: headers}
 		if len(currentConfig.Clusters) == 0 {
-			viper.SetDefault("clusters", newConfig)
-			viper.SetDefault("current-cluster", u.String())
-			viper.SafeWriteConfig()
+			viper.Set("clusters", newConfig)
+			viper.Set("current-cluster", u.String())
+			viper.WriteConfig()
 			viper.ReadInConfig()
 			fmt.Printf("Config file created: %v\n", viper.ConfigFileUsed())
 		} else {
-			viper.SetDefault("clusters", append(currentConfig.Clusters, newConfig))
-			viper.SetDefault("current-cluster", u.String())
+			viper.Set("clusters", append(currentConfig.Clusters, newConfig))
+			viper.Set("current-cluster", u.String())
 			viper.WriteConfig()
 			fmt.Printf("current-cluster updated: %v\n", u.String())
 		}

@@ -18,8 +18,9 @@ package cmd
 import (
 	"encoding/json"
 	"io/ioutil"
-	"net/http"
 
+	"github.com/magnusfurugard/flinkctl/tools"
+	"github.com/parnurzeal/gorequest"
 	"github.com/spf13/cobra"
 )
 
@@ -41,12 +42,8 @@ var getJarsCmd = &cobra.Command{
 	Short:  "List all uploaded jars in your cluster",
 	PreRun: func(cmd *cobra.Command, args []string) { InitCluster() },
 	RunE: func(cmd *cobra.Command, args []string) error {
-		//TODO: Respect headers
-		resp, err := http.Get(cl.Jars.URL.String())
-		if err != nil {
-			return err
-		}
-		defer resp.Body.Close()
+		resp, _, _ := tools.ApplyHeadersToRequest(gorequest.New().Get(cl.Jars.URL.String())).End()
+		//TODO: Error management
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			return err

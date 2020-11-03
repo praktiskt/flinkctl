@@ -21,6 +21,7 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/magnusfurugard/flinkctl/tools"
 	"github.com/parnurzeal/gorequest"
 	"github.com/spf13/cobra"
 )
@@ -63,12 +64,13 @@ var submitJobCmd = &cobra.Command{
 
 		u := cl.Jars.UploadURL.String()
 		for _, file := range args {
-			// TODO: Respect headers
-			resp, _, _ := gorequest.
-				New().
-				Post(u).
-				Type("multipart").
-				SendFile(file).
+
+			resp, _, _ := tools.ApplyHeadersToRequest(
+				gorequest.
+					New().
+					Post(u).
+					Type("multipart").
+					SendFile(file)).
 				End()
 
 			body, err := ioutil.ReadAll(resp.Body)
@@ -89,10 +91,12 @@ var submitJobCmd = &cobra.Command{
 				EntryClass:            StringOrNil(entryClass),
 			})
 
-			resp, _, _ = gorequest.New().
-				Post(fileToPass).
-				Type("json").
-				Send(string(appb)).
+			resp, _, _ = tools.ApplyHeadersToRequest(
+				gorequest.
+					New().
+					Post(fileToPass).
+					Type("json").
+					Send(string(appb))).
 				End()
 
 			body, err = ioutil.ReadAll(resp.Body)

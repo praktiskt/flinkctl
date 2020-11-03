@@ -3,7 +3,9 @@ package cluster
 import (
 	"encoding/json"
 	"io/ioutil"
-	"net/http"
+
+	"github.com/magnusfurugard/flinkctl/tools"
+	"github.com/parnurzeal/gorequest"
 )
 
 type ClusterConfig struct {
@@ -30,13 +32,8 @@ type ClusterOverview struct {
 }
 
 func (c *Cluster) GetConfig() (ClusterConfig, error) {
-	//TODO: Respect headers
-	re, err := http.Get(c.ConfigURL.String())
-	if err != nil {
-		return ClusterConfig{}, err
-	}
-	defer re.Body.Close()
-
+	re, _, _ := tools.ApplyHeadersToRequest(gorequest.New().Get(c.ConfigURL.String())).End()
+	//TODO: Error management
 	body, err := ioutil.ReadAll(re.Body)
 	if err != nil {
 		return ClusterConfig{}, err
@@ -51,13 +48,8 @@ func (c *Cluster) GetConfig() (ClusterConfig, error) {
 }
 
 func (c *Cluster) GetOverview() (ClusterOverview, error) {
-	// TODO: Respect headers
-	re, err := http.Get(c.OverviewURL.String())
-	if err != nil {
-		return ClusterOverview{}, err
-	}
-	defer re.Body.Close()
-
+	re, _, _ := tools.ApplyHeadersToRequest(gorequest.New().Get(c.OverviewURL.String())).End()
+	//TODO: Error management
 	body, err := ioutil.ReadAll(re.Body)
 	if err != nil {
 		return ClusterOverview{}, err

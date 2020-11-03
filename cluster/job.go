@@ -6,7 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/http"
+
+	"github.com/magnusfurugard/flinkctl/tools"
+	"github.com/parnurzeal/gorequest"
 )
 
 type JobDescription struct {
@@ -92,16 +94,11 @@ type JobDescription struct {
 }
 
 func (c *Cluster) DescribeJob(jid string) (JobDescription, error) {
-	//TODO: Respect headers
 	if len(jid) != 32 {
 		return JobDescription{}, fmt.Errorf("invalid jid: %v", jid)
 	}
-	re, err := http.Get(c.Jobs.URL.String() + "/" + jid)
-	if err != nil {
-		return JobDescription{}, err
-	}
-	defer re.Body.Close()
-
+	re, _, _ := tools.ApplyHeadersToRequest(gorequest.New().Get(c.Jobs.URL.String() + "/" + jid)).End()
+	// TODO: Error management
 	body, err := ioutil.ReadAll(re.Body)
 	if err != nil {
 		return JobDescription{}, err

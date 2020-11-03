@@ -39,12 +39,12 @@ func Print(t interface{}) {
 }
 
 func InitCluster() {
-	host, err := config.GetCurrent()
+	conf, err := config.GetCurrent()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	hostString := strings.TrimSpace(host.URL)
+	hostString := strings.TrimSpace(conf.URL)
 	cl = c.New(hostString)
 }
 

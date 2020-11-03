@@ -1,5 +1,7 @@
 package config
 
+//TODO: Refactor into more relevant files
+
 import (
 	"fmt"
 	"os"
@@ -60,4 +62,9 @@ func CheckCurrentExists() {
 		fmt.Println("No current cluster context set")
 		os.Exit(1)
 	}
+}
+
+func GetHeaders() []string {
+	current, _ := GetCurrent()
+	return current.Headers
 }
