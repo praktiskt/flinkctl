@@ -21,6 +21,7 @@ import (
 	"strings"
 
 	c "github.com/magnusfurugard/flinkctl/cluster"
+	"github.com/magnusfurugard/flinkctl/config"
 	"github.com/magnusfurugard/flinkctl/tools"
 	"github.com/spf13/cobra"
 
@@ -29,7 +30,6 @@ import (
 )
 
 var (
-	cfgFile      string
 	cl           c.Cluster
 	outputFormat string
 )
@@ -39,7 +39,7 @@ func Print(t interface{}) {
 }
 
 func InitCluster() {
-	host, err := tools.GetCurrentConfig()
+	host, err := config.GetCurrentConfig()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -54,7 +54,7 @@ var rootCmd = &cobra.Command{
 	Short:  "Manage Flink applications.",
 	PreRun: func(cmd *cobra.Command, args []string) { InitCluster() },
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println(tools.GetConfig())
+		fmt.Println(config.GetConfig())
 		return nil
 	},
 }
@@ -71,31 +71,24 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVarP(&outputFormat, "outputFormat", "o", "table", "output format, supports: json,table")
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.flinkctl.yaml)")
 }
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	if cfgFile != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
-	} else {
-		// Find home directory.
-		home, err := homedir.Dir()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".flinkctl")
-		viper.SetConfigType("yaml")
+	// Find home directory.
+	home, err := homedir.Dir()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
+	viper.AddConfigPath(home)
+	viper.SetConfigName(".flinkctl")
+	viper.SetConfigType("yaml")
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err != nil {
-		fmt.Println("No configuration file found")
+	if err := viper.ReadInConfig(); err == nil {
+		fmt.Println("Using config")
 	}
 }

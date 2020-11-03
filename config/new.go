@@ -1,4 +1,4 @@
-package tools
+package config
 
 import (
 	"fmt"
@@ -20,13 +20,14 @@ type ClusterConfig struct {
 func GetConfig() *FlinkctlConfig {
 	conf := &FlinkctlConfig{}
 	if err := viper.ReadInConfig(); err != nil {
-		fmt.Println("No config found, use `flinkctl config add-cluster --help` to get started.")
-		return conf
+		viper.SetDefault("current-cluster", "")
+		viper.SafeWriteConfig()
 	}
 	if err := viper.Unmarshal(conf); err != nil {
 		fmt.Printf("Could not parse config: %v", err)
 		return conf
 	}
+	fmt.Println(conf.Clusters)
 	return conf
 }
 
