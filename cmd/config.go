@@ -21,8 +21,9 @@ import (
 
 // configCmd represents the config command
 var configCmd = &cobra.Command{
-	Use:   "config",
-	Short: "Alter your flinkctl configuration file",
+	Use:       "config",
+	Short:     "Alter your flinkctl configuration file",
+	ValidArgs: []string{"add-cluster", "use-cluster"},
 }
 
 func init() {

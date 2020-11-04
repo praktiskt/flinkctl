@@ -24,7 +24,11 @@ import (
 	"github.com/spf13/viper"
 )
 
-var headers []string
+var (
+	headers           []string
+	basicAuthUsername string
+	basicAuthPassword string
+)
 
 // addClusterCmd represents the addCluster command
 var addClusterCmd = &cobra.Command{
@@ -32,18 +36,21 @@ var addClusterCmd = &cobra.Command{
 	Short: "Add a new cluster to your flinkctl config",
 	Example: `flinkctl config add-cluster https://localhost:123
 flinkctl config add-cluster https://localhost:567 --headers="Authorization: Basic Zm9v,Content-Type: application/json"`,
+	Args: cobra.ExactValidArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if len(args) != 1 {
-			return fmt.Errorf("add-cluster requires exactly 1 positional argument, not %v", len(args))
-		}
-
 		u, err := url.Parse(args[0])
 		if err != nil {
 			return err
 		}
 
 		currentConfig := config.Get()
-		newConfig := config.ClusterConfig{URL: u.String(), Headers: headers}
+		newConfig := config.ClusterConfig{
+			URL:     u.String(),
+			Headers: headers,
+			BasicAuth: config.BasicAuth{
+				Username: basicAuthUsername,
+				Password: basicAuthPassword}}
+
 		if len(currentConfig.Clusters) == 0 {
 			viper.Set("clusters", newConfig)
 			viper.Set("current-cluster", u.String())
@@ -63,4 +70,6 @@ flinkctl config add-cluster https://localhost:567 --headers="Authorization: Basi
 func init() {
 	configCmd.AddCommand(addClusterCmd)
 	addClusterCmd.Flags().StringSliceVar(&headers, "headers", []string{}, "additional headers to pass when calling this cluster")
+	addClusterCmd.Flags().StringVar(&basicAuthUsername, "basic-auth-username", "", "")
+	addClusterCmd.Flags().StringVar(&basicAuthPassword, "basic-auth-password", "", "")
 }

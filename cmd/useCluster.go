@@ -28,10 +28,8 @@ var useClusterCmd = &cobra.Command{
 	Use:     "use-cluster <cluster url>",
 	Short:   "Change the currently in-use config for flinkctl",
 	Example: `flinkctl config use-cluster https://localhost:123`,
+	Args:    cobra.ExactValidArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if len(args) != 1 {
-			return fmt.Errorf("use-cluster requires exactly one argument")
-		}
 		url := args[0]
 		if !config.ConfigExists(url) {
 			return fmt.Errorf("no such cluster exists in your config")

@@ -20,8 +20,9 @@ import (
 )
 
 var describeCmd = &cobra.Command{
-	Use:   "describe",
-	Short: "Describe a resource in your cluster, or the cluster itself.",
+	Use:       "describe",
+	Short:     "Describe a resource in your cluster, or the cluster itself.",
+	ValidArgs: []string{"cluster", "job"},
 }
 
 func init() {

@@ -25,10 +25,8 @@ var describeJobCmd = &cobra.Command{
 	Use:    "job <jid>",
 	Short:  "Describe a job in your cluster.",
 	PreRun: func(cmd *cobra.Command, args []string) { InitCluster() },
+	Args:   cobra.ExactValidArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if len(args) < 1 {
-			return fmt.Errorf("bad args, got: %v", args)
-		}
 		for _, jid := range args {
 			if len(jid) != 32 {
 				return fmt.Errorf("%v is not a valid jid", jid)

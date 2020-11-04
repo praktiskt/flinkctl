@@ -57,10 +57,8 @@ var submitJobCmd = &cobra.Command{
 	Short:   "Submit a packaged Flink job to your cluster.",
 	Example: "flinkctl submit job ~/path/to/flinkjob.jar",
 	PreRun:  func(cmd *cobra.Command, args []string) { InitCluster() },
+	Args:    cobra.ExactValidArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if len(args) < 1 {
-			return fmt.Errorf("must specify at least one job to submit")
-		}
 
 		u := cl.Jars.UploadURL.String()
 		for _, file := range args {

@@ -15,8 +15,14 @@ type FlinkctlConfig struct {
 }
 
 type ClusterConfig struct {
-	URL     string   `yaml:"url"`
-	Headers []string `yaml:"headers"`
+	URL       string `yaml:"url"`
+	BasicAuth BasicAuth
+	Headers   []string `yaml:"headers"`
+}
+
+type BasicAuth struct {
+	Username string
+	Password string
 }
 
 func Get() *FlinkctlConfig {
@@ -36,7 +42,7 @@ func GetCurrent() (*ClusterConfig, error) {
 			return &conf, nil
 		}
 	}
-	return &ClusterConfig{}, fmt.Errorf("no such cluster: %v", currentCluster)
+	return &ClusterConfig{}, fmt.Errorf("ERROR: no such cluster: %v", currentCluster)
 }
 
 func ConfigExists(url string) bool {
@@ -67,4 +73,9 @@ func CheckCurrentExists() {
 func GetHeaders() []string {
 	current, _ := GetCurrent()
 	return current.Headers
+}
+
+func GetBasicAuth() BasicAuth {
+	current, _ := GetCurrent()
+	return current.BasicAuth
 }

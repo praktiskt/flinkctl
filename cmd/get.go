@@ -20,9 +20,9 @@ import (
 )
 
 var getCmd = &cobra.Command{
-	Use:    "get",
-	Short:  "Get a resource in your Flink cluster",
-	PreRun: func(cmd *cobra.Command, args []string) { InitCluster() },
+	Use:       "get",
+	Short:     "Get a resource in your Flink cluster",
+	ValidArgs: []string{"jars", "jobs"},
 }
 
 func init() {
