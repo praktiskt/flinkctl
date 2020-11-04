@@ -23,19 +23,19 @@ import (
 
 // completionCmd represents the completion command
 var completionCmd = &cobra.Command{
-	Use:   "completion [bash|zsh|fish|powershell]",
+	Use:   "generate-autocomplete [bash|zsh|fish|powershell]",
 	Short: "Generate completion script",
 	Long: `To load completions:
 
 Bash:
 
-$ source <(yourprogram completion bash)
+$ source <(flinkctl generate-autocomplete bash)
 
 # To load completions for each session, execute once:
 Linux:
-  $ yourprogram completion bash > /etc/bash_completion.d/yourprogram
+  $ flinkctl generate-autocomplete bash > /etc/bash_completion.d/flinkctl
 MacOS:
-  $ yourprogram completion bash > /usr/local/etc/bash_completion.d/yourprogram
+  $ flinkctl generate-autocomplete bash > /usr/local/etc/bash_completion.d/flinkctl
 
 Zsh:
 
@@ -45,16 +45,16 @@ Zsh:
 $ echo "autoload -U compinit; compinit" >> ~/.zshrc
 
 # To load completions for each session, execute once:
-$ yourprogram completion zsh > "${fpath[1]}/_yourprogram"
+$ flinkctl generate-autocomplete zsh > "${fpath[1]}/_flinkctl"
 
 # You will need to start a new shell for this setup to take effect.
 
 Fish:
 
-$ yourprogram completion fish | source
+$ flinkctl generate-autocomplete fish | source
 
 # To load completions for each session, execute once:
-$ yourprogram completion fish > ~/.config/fish/completions/yourprogram.fish
+$ flinkctl generate-autocomplete fish > ~/.config/fish/completions/flinkctl.fish
 `,
 	DisableFlagsInUseLine: true,
 	ValidArgs:             []string{"bash", "zsh", "fish", "powershell"},
@@ -75,14 +75,4 @@ $ yourprogram completion fish > ~/.config/fish/completions/yourprogram.fish
 
 func init() {
 	rootCmd.AddCommand(completionCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// completionCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// completionCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

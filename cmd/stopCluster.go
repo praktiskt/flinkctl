@@ -31,5 +31,5 @@ var stopClusterCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(stopClusterCmd)
+	stopCmd.AddCommand(stopClusterCmd)
 }
