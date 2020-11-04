@@ -50,12 +50,9 @@ func InitCluster() {
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:    "flinkctl",
-	Short:  "Manage Flink applications.",
-	PreRun: func(cmd *cobra.Command, args []string) { InitCluster() },
-	RunE: func(cmd *cobra.Command, args []string) error {
-		return nil
-	},
+	Use:       "flinkctl",
+	Short:     "Manage Flink applications.",
+	ValidArgs: []string{"cluster", "completion", "config", "describe", "edit", "get", "help", "submit-job"},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

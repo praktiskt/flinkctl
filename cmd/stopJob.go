@@ -31,5 +31,5 @@ var stopJobCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(stopJobCmd)
+	stopCmd.AddCommand(stopJobCmd)
 }
