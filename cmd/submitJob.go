@@ -19,17 +19,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"strings"
 
 	"github.com/magnusfurugard/flinkctl/tools"
 	"github.com/parnurzeal/gorequest"
 	"github.com/spf13/cobra"
 )
-
-type SubmitResponse struct {
-	Filename string
-	Status   string
-}
 
 type ApplicationBody struct {
 	AllowNonRestoredState *string `json:"allowNonRestoredState"`
@@ -53,76 +47,52 @@ var (
 
 // submitJobCmd represents the submitJob command
 var submitJobCmd = &cobra.Command{
-	Use:     "submit-job <path to jar> [flags]",
-	Short:   "Submit a packaged Flink job to your cluster.",
-	Example: "flinkctl submit job ~/path/to/flinkjob.jar",
+	Use:     "job <submitted filename> [flags]",
+	Short:   "submit an uploaded file to the jobmanager (starts the job)",
+	Example: "flinkctl submit job 6f52c1fc-e116-4497-9037-68927ae0db6f_DummyApp-1.0-SNAPSHOT.jar --parallelism 2",
 	PreRun:  func(cmd *cobra.Command, args []string) { InitCluster() },
 	Args:    cobra.ExactValidArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		appb, _ := json.Marshal(ApplicationBody{
+			AllowNonRestoredState: StringOrNil(allowNonRestoredState),
+			Parallelism:           StringOrNil(parallelism),
+			ProgramArgs:           StringOrNil(programArgs),
+			SavepointPath:         StringOrNil(savepointPath),
+			EntryClass:            StringOrNil(entryClass),
+		})
+		fileToSubmitURL := fmt.Sprintf("%v/%v/run", cl.Jars.URL.String(), args[0])
+		resp, _, _ := tools.ApplyHeadersToRequest(
+			gorequest.
+				New().
+				Post(fileToSubmitURL).
+				Type("json").
+				Send(string(appb))).
+			End()
 
-		u := cl.Jars.UploadURL.String()
-		for _, file := range args {
-
-			resp, _, _ := tools.ApplyHeadersToRequest(
-				gorequest.
-					New().
-					Post(u).
-					Type("multipart").
-					SendFile(file)).
-				End()
-
-			body, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				return err
-			}
-
-			if resp.StatusCode != 200 {
-				return fmt.Errorf("failed to submit jarfile: %v", string(body))
-			}
-
-			fileToPass := fmt.Sprintf("%v/%v/run", cl.Jars.URL.String(), ExtractSubmittedFilename(body))
-			appb, _ := json.Marshal(ApplicationBody{
-				AllowNonRestoredState: StringOrNil(allowNonRestoredState),
-				Parallelism:           StringOrNil(parallelism),
-				ProgramArgs:           StringOrNil(programArgs),
-				SavepointPath:         StringOrNil(savepointPath),
-				EntryClass:            StringOrNil(entryClass),
-			})
-
-			resp, _, _ = tools.ApplyHeadersToRequest(
-				gorequest.
-					New().
-					Post(fileToPass).
-					Type("json").
-					Send(string(appb))).
-				End()
-
-			body, err = ioutil.ReadAll(resp.Body)
-			if err != nil {
-				return err
-			}
-
-			if resp.StatusCode != 200 {
-				return fmt.Errorf("failed to start job: %v", string(body))
-			}
-
-			re := RunResponse{}
-			json.Unmarshal(body, &re)
-			Print(re)
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return err
 		}
+
+		if resp.StatusCode != 200 {
+			return fmt.Errorf("failed to start job: %v", string(body))
+		}
+
+		re := RunResponse{}
+		json.Unmarshal(body, &re)
+		Print(re)
 
 		return nil
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(submitJobCmd)
-
-	submitJobCmd.Flags().StringVar(&allowNonRestoredState, "allowNonRestoredState", "", "Allow non restored state")
-	submitJobCmd.Flags().StringVar(&parallelism, "parallelism", "", "set parallelism for the submitted job")
-	submitJobCmd.Flags().StringVar(&programArgs, "programArgs", "", `a string of program arguments, e.g. "-A=B -C=D"`)
-	submitJobCmd.Flags().StringVar(&savepointPath, "savepointPath", "", "if specified, a save point path")
-	submitJobCmd.Flags().StringVar(&entryClass, "entryClass", "", "the entry class of the submitted jar")
+	submitCmd.AddCommand(submitJobCmd)
+	submitJobCmd.PersistentFlags().StringVar(&allowNonRestoredState, "allowNonRestoredState", "", "Allow non restored state")
+	submitJobCmd.PersistentFlags().StringVar(&parallelism, "parallelism", "", "set parallelism for the submitted job")
+	submitJobCmd.PersistentFlags().StringVar(&programArgs, "programArgs", "", `a string of program arguments, e.g. "-A=B -C=D"`)
+	submitJobCmd.PersistentFlags().StringVar(&savepointPath, "savepointPath", "", "if specified, a save point path")
+	submitJobCmd.PersistentFlags().StringVar(&entryClass, "entryClass", "", "the entry class of the submitted jar")
 }
 
 func StringOrNil(a string) *string {
@@ -130,11 +100,4 @@ func StringOrNil(a string) *string {
 		return nil
 	}
 	return &a
-}
-
-func ExtractSubmittedFilename(responseBody []byte) string {
-	s := SubmitResponse{}
-	json.Unmarshal(responseBody, &s)
-	fn := strings.Split(s.Filename, "/")
-	return fn[len(fn)-1]
 }

@@ -19,12 +19,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// editCmd represents the edit command
-var editCmd = &cobra.Command{
-	Use:   "edit",
-	Short: "Edit a resource in your Flink cluster",
+// submitCmd represents the submit command
+var submitCmd = &cobra.Command{
+	Use:   "submit",
+	Short: "submit a jar to your cluster, or a job to start",
 }
 
 func init() {
-	rootCmd.AddCommand(editCmd)
+	rootCmd.AddCommand(submitCmd)
 }
