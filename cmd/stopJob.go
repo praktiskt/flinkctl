@@ -18,6 +18,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/magnusfurugard/flinkctl/tools"
 	"github.com/parnurzeal/gorequest"
 	"github.com/spf13/cobra"
 )
@@ -36,9 +37,9 @@ var stopJobCmd = &cobra.Command{
 
 		//TODO: Currently uses yarn-cancel as opposed to just /stop (which doesn't seem to work)
 		stopURL := fmt.Sprintf("%v/%v/yarn-cancel", cl.Jobs.URL.String(), jid)
-		resp, body, _ := gorequest.
+		resp, body, _ := tools.ApplyHeadersToRequest(gorequest.
 			New().
-			Get(stopURL).
+			Get(stopURL)).
 			End()
 
 		if resp.StatusCode == 202 {

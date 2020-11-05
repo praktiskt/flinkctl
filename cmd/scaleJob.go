@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/magnusfurugard/flinkctl/tools"
 	"github.com/parnurzeal/gorequest"
 	"github.com/spf13/cobra"
 )
@@ -43,7 +44,7 @@ var scaleJobCmd = &cobra.Command{
 		}
 
 		scaleURL := fmt.Sprintf("%v/%v/rescaling?parallelism=%v", cl.Jobs.URL.String(), jid, newParallelism)
-		resp, body, _ := gorequest.New().Patch(scaleURL).End()
+		resp, body, _ := tools.ApplyHeadersToRequest(gorequest.New().Patch(scaleURL)).End()
 		fmt.Println(body)
 		if resp.StatusCode == 200 {
 			os.Exit(0)

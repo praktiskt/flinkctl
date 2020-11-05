@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/magnusfurugard/flinkctl/tools"
 	"github.com/parnurzeal/gorequest"
 	"github.com/spf13/cobra"
 )
@@ -34,9 +35,9 @@ var stopClusterCmd = &cobra.Command{
 		if !iKnowWhatImDoing {
 			return fmt.Errorf("you don't know what you're doing")
 		}
-		resp, _, _ := gorequest.
+		resp, _, _ := tools.ApplyHeadersToRequest(gorequest.
 			New().
-			Delete(cl.ClusterURL.String()).
+			Delete(cl.ClusterURL.String())).
 			End()
 		//TODO: Error management
 		body, err := ioutil.ReadAll(resp.Body)
