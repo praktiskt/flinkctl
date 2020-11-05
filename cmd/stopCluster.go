@@ -17,19 +17,39 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
 
+	"github.com/parnurzeal/gorequest"
 	"github.com/spf13/cobra"
 )
 
+var iKnowWhatImDoing bool
+
 // stopClusterCmd represents the stopCluster command
 var stopClusterCmd = &cobra.Command{
-	Use:   "cluster",
-	Short: "A brief description of your command",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("stopCluster called")
+	Use:    "cluster",
+	Short:  "shut down the cluster",
+	PreRun: func(cmd *cobra.Command, args []string) { InitCluster() },
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if !iKnowWhatImDoing {
+			return fmt.Errorf("you don't know what you're doing")
+		}
+		resp, _, _ := gorequest.
+			New().
+			Delete(cl.ClusterURL.String()).
+			End()
+		//TODO: Error management
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return err
+		}
+		msg := string(body)
+		Print(msg)
+		return nil
 	},
 }
 
 func init() {
 	stopCmd.AddCommand(stopClusterCmd)
+	stopClusterCmd.Flags().BoolVar(&iKnowWhatImDoing, "i-know-what-im-doing", false, "you need to pass this flag for the call to work :)")
 }

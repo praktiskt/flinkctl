@@ -22,7 +22,7 @@ import (
 // stopCmd represents the stop command
 var stopCmd = &cobra.Command{
 	Use:   "stop",
-	Short: "A brief description of your command",
+	Short: "Stop a running job, or the entire cluster.",
 }
 
 func init() {

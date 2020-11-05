@@ -11,6 +11,7 @@ import (
 type Cluster struct {
 	HostURL     url.URL
 	ConfigURL   url.URL
+	ClusterURL  url.URL
 	DatasetsURL url.URL
 	OverviewURL url.URL
 	Jobs        struct {
@@ -47,6 +48,7 @@ func New(hostURL string) Cluster {
 
 	cl.HostURL = h
 	cl.ConfigURL = tools.UrlOrFail(h, "/config")
+	cl.ClusterURL = tools.UrlOrFail(h, "/cluster")
 	cl.OverviewURL = tools.UrlOrFail(h, "/overview")
 	cl.DatasetsURL = tools.UrlOrFail(h, "/datasets")
 

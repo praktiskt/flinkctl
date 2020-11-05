@@ -18,15 +18,36 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/parnurzeal/gorequest"
 	"github.com/spf13/cobra"
 )
 
 // stopJobCmd represents the stopJob command
 var stopJobCmd = &cobra.Command{
-	Use:   "job",
-	Short: "A brief description of your command",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("stopJob called")
+	Use:    "job <job id>",
+	Short:  "Stop a currently running job",
+	Args:   cobra.ExactArgs(1),
+	PreRun: func(cmd *cobra.Command, args []string) { InitCluster() },
+	RunE: func(cmd *cobra.Command, args []string) error {
+		jid := args[0]
+		if len(jid) != 32 {
+			return fmt.Errorf("`%v` is not a valid job id", jid)
+		}
+
+		//TODO: Currently uses yarn-cancel as opposed to just /stop (which doesn't seem to work)
+		stopURL := fmt.Sprintf("%v/%v/yarn-cancel", cl.Jobs.URL.String(), jid)
+		resp, body, _ := gorequest.
+			New().
+			Get(stopURL).
+			End()
+
+		if resp.StatusCode == 202 {
+			fmt.Printf("Successfully cancelled job %v\n", jid)
+		} else {
+			fmt.Println("Failed to cancelled job: " + body)
+		}
+
+		return nil
 	},
 }
 
