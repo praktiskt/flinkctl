@@ -22,7 +22,7 @@ import (
 // scaleCmd represents the scale command
 var scaleCmd = &cobra.Command{
 	Use:   "scale",
-	Short: "A brief description of your command",
+	Short: "scale a resource in your Flink cluster",
 }
 
 func init() {
