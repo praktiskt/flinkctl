@@ -12,7 +12,7 @@ Lots of work to be done still, but currently it can do rudementary tasks. **Use 
 * [x] Describe the current cluster (`describe cluster`)
 * [x] Describe a single job (`describe job <job id>`)
 * [x] List running jobs (`get jobs`, `get jobs -d`)
-* [x] Submit fat jars (with args) (`submit jar /path/to/fat.jar --parallelism 2`)
+* [x] Submit fat jars (with args) (`submit jar -f /path/to/fat.jar --parallelism 2`)
 * [x] List uploaded jars (`get jars`)
 * [x] Submit an uploaded jar to cluster (`submit job <uploaded file id>`)
 * [x] Stop a running job (`stop job <job id>`)
