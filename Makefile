@@ -4,5 +4,8 @@ deploy:
 undeploy:
 	./flink-cluster/deploy.sh delete
 
-install:
-	go build -o flinkctl && mv flinkctl ~/bin/
+build:
+	go build -o flinkctl 
+
+install: build
+	mv flinkctl ~/bin/
