@@ -17,6 +17,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/magnusfurugard/flinkctl/tools"
@@ -38,6 +39,10 @@ var submitJarCmd = &cobra.Command{
 	Args:   cobra.ExactArgs(0),
 	PreRun: func(cmd *cobra.Command, args []string) { InitCluster() },
 	RunE: func(cmd *cobra.Command, args []string) error {
+		if _, err := os.Stat(jarFilePath); os.IsNotExist(err) || jarFilePath == "" {
+			return fmt.Errorf("selected fat jar does not exist")
+		}
+
 		u := cl.Jars.UploadURL.String()
 		s := SubmitResponse{}
 		resp, body, _ := tools.ApplyHeadersToRequest(
