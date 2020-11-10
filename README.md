@@ -20,6 +20,7 @@ Lots of work to be done still, but currently it can do rudementary tasks. **Use 
 * [x] Trigger job rescale (but it's disabled in newer Flink versions :sadpanda:) (`scale job <job id> --parallelism=4`)
 * [x] Generate autocomplete for binary (`generate-autocomplete <shell>`)
 * [ ] Json or table output on all prints / consistent printing (some deviations exists)
+* [ ] Timestamps in output
 * [ ] Create job savepoint
 * [ ] Monitor misc triggerids
 * [ ] List job vertexes
