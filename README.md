@@ -117,3 +117,6 @@ flinkctl get jobs
 # ---------------------------------- ---------- 
 #  b68454ec5d7ca9e13669687871cea629   CANCELED  
 ```
+
+## Contributing
+Feel free to contribute as much as you want. I'm very open to suggestions and improvements. There's a lot of unattended TODO's that needs work, and that's just the tip of the ice berg.
