@@ -1,6 +1,9 @@
 # flinkctl
 A command line utility for managing remote Flink clusters and applications with a familiar api. 
 
+## Why not use existing binary?
+In all honesty you probably should. I wanted to learn what's available from the Flink REST API so I figured I'd build my own client. In addition, `flinkctl` enables you to connect to remove clusters which is something I find useful.
+
 ## Status of project
 Lots of work to be done still, but currently it can do rudementary tasks. **Use this in production at your own risk, it's probably not stable.**
 
@@ -19,11 +22,19 @@ Lots of work to be done still, but currently it can do rudementary tasks. **Use 
 * [ ] Json or table output on all prints / consistent printing (some deviations exists)
 * [ ] Create job savepoint
 * [ ] Monitor misc triggerids
+* [ ] List job vertexes
+* [ ] Measure backpressure of different vertexes
+* [ ] Metrics
 * [ ] Clean up `.flinkctl.yaml`-management (at the moment it's pretty garbage)
 * [ ] Tests... Tests everywhere.
 
 ## Development / Examples
 There's a dummy app that runs forever with minimum utilization in `flink-cluster`. In addition, the `Makefile` bootstraps a Flink cluster to your `kubectl config current-context`.
+
+### Build the binary
+Since this is a Cobra application (Golang), you'll need Go to build it. Once that's out of your way, you can use `make build` to generate the binary. 
+
+Using `make install` will also move that binary to `~/bin/`.
 
 ### Bootstrap a Flink cluster locally
 ```
