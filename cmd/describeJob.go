@@ -27,16 +27,15 @@ var describeJobCmd = &cobra.Command{
 	PreRun: func(cmd *cobra.Command, args []string) { InitCluster() },
 	Args:   cobra.ExactValidArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		for _, jid := range args {
-			if len(jid) != 32 {
-				return fmt.Errorf("%v is not a valid jid", jid)
-			}
-			re, err := cl.DescribeJob(jid)
-			if err != nil {
-				return err
-			}
-			Print(re)
+		jid := args[0]
+		if len(jid) != 32 {
+			return fmt.Errorf("%v is not a valid jid", jid)
 		}
+		re, err := cl.DescribeJob(jid)
+		if err != nil {
+			return err
+		}
+		Print(re)
 		return nil
 	},
 }
