@@ -2,7 +2,7 @@
 A command line utility for managing remote Flink clusters and applications with a familiar api. 
 
 ## Why not use existing binary?
-In all honesty you probably should. I wanted to learn what's available from the Flink REST API so I figured I'd build my own client. In addition, `flinkctl` enables you to connect to remove clusters which is something I find useful.
+In all honesty you probably should. I wanted to learn what's available from the Flink REST API so I figured I'd build my own client. In addition, `flinkctl` enables you to connect to remote clusters which is something I find useful.
 
 ## Status of project
 Lots of work to be done still, but currently it can do rudementary tasks. **Use this in production at your own risk, it's probably not stable.**
