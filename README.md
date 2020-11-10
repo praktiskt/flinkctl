@@ -108,7 +108,7 @@ flinkctl describe job b68454ec5d7ca9e13669687871cea629
 # Outputs:
 #  DURATION   END-TIME   ISSTOPPABLE   JID                                NAME                             NOW    START-TIME   STATE     
 # ---------- ---------- ------------- ---------------------------------- -------------------------------- ------ ------------ ---------- 
-#    109.3K       1.6T   No            b68454ec5d7ca9e13669687871cea629   Example app - Infinite counter   1.6T         1.6T   CANCELED  
+#    109.3K       1.6T   No            b68454ec5d7ca9e13669687871cea629   Example app - Infinite counter   1.6T         1.6T   RUNNING  
 
 flinkctl stop job b68454ec5d7ca9e13669687871cea629
 # Outputs:
