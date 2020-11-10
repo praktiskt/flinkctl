@@ -105,7 +105,10 @@ flinkctl get jobs
 #  b68454ec5d7ca9e13669687871cea629   RUNNING  
 
 flinkctl describe job b68454ec5d7ca9e13669687871cea629
-# Outputs a lot, doesn't fit README. Even more with -o json
+# Outputs:
+#  DURATION   END-TIME   ISSTOPPABLE   JID                                NAME                             NOW    START-TIME   STATE     
+# ---------- ---------- ------------- ---------------------------------- -------------------------------- ------ ------------ ---------- 
+#    109.3K       1.6T   No            b68454ec5d7ca9e13669687871cea629   Example app - Infinite counter   1.6T         1.6T   CANCELED  
 
 flinkctl stop job b68454ec5d7ca9e13669687871cea629
 # Outputs:
